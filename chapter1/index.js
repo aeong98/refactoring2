@@ -22,7 +22,7 @@ function statement(invoice, plays) {
           thisAmount += 1000 * (perf.audience - 30);
         }
         break;
-      case 'comedy':
+      case 'comedy': // 희극
         thisAmount = 30000;
         if (perf.audience > 20) {
           thisAmount += 10000 + 500 * (perf.audience - 20);
