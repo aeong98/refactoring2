@@ -1,7 +1,7 @@
 const { test, beforeAll, expect, describe } = require('@jest/globals');
 
-const invoice = require('./invoices.json');
-const plays = require('./play.json');
+const invoice = require('../resources/invoices.json');
+const plays = require('../resources/play.json');
 const statement = require('./statement');
 
 let statements;
