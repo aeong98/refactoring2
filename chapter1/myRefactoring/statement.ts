@@ -1,4 +1,4 @@
-function statement(invoice: any, plays: any) {
+export function statement(invoice: any, plays: any) {
   let totalAmount = 0;
   let volumeCredits = 0;
   let result = `청구 내역 (고객명: ${invoice.customer})\n`;
@@ -43,5 +43,3 @@ function statement(invoice: any, plays: any) {
   result += `적립 포인트: ${volumeCredits}점\n`;
   return result;
 }
-
-module.exports = statement;

@@ -1,3 +1,5 @@
+import { statement } from './statement';
+
 const invoice = require('../resources/invoices.json');
 const plays = require('../resources/play.json');
 
