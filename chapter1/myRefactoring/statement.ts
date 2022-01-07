@@ -1,7 +1,4 @@
-const invoice = require('../resources/invoices.json');
-const plays = require('../resources/play.json');
-
-function statement(invoice, plays) {
+function statement(invoice: any, plays: any) {
   let totalAmount = 0;
   let volumeCredits = 0;
   let result = `청구 내역 (고객명: ${invoice.customer})\n`;
@@ -47,4 +44,4 @@ function statement(invoice, plays) {
   return result;
 }
 
-console.log(statement(invoice, plays));
+module.exports = statement;
