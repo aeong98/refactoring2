@@ -1,7 +1,9 @@
-import { statement, usd } from './statement';
+import { statement, usd, playFor } from './statement';
 
-const invoice = require('../resources/invoices.json');
-const plays = require('../resources/play.json');
+import { Invoice, Play } from './interfaces';
+
+const invoice: Invoice = require('../resources/invoices.json');
+const plays: Play = require('../resources/play.json');
 
 let statements: string[];
 describe('청구 내역서에서 ', () => {
@@ -20,5 +22,9 @@ describe('청구 내역서에서 ', () => {
 
   test('123456 -> $123.456', () => {
     expect(usd(123456)).toEqual('$1,234.56');
+  });
+
+  test('연극 이름(hamlet)과 type(comedy)를 반환한다.', () => {
+    expect(playFor(invoice.performances[0].playID, plays));
   });
 });
