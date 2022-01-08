@@ -1,14 +1,9 @@
 import { Invoice, Play } from './interfaces';
 
-export function statement(invoice: Invoice, plays: Play) {
+function statement(invoice: Invoice, plays: Play): string {
   let totalAmount = 0;
   let volumeCredits = 0;
   let result = `청구 내역 (고객명: ${invoice.customer})\n`;
-  const format = new Intl.NumberFormat('en-US', {
-    style: 'currency',
-    currency: 'USD',
-    minimumFractionDigits: 2,
-  }).format;
 
   for (let perf of invoice.performances) {
     const play = plays[perf.playID];
@@ -38,10 +33,21 @@ export function statement(invoice: Invoice, plays: Play) {
     if ('comedy' === play.type) volumeCredits += Math.floor(perf.audience / 5);
 
     // 청구 내역을 출력한다.
-    result += `${play.name}:${format(thisAmount / 100)} (${perf.audience}석)\n`;
+    result += `${play.name}:${usd(thisAmount)} (${perf.audience}석)\n`;
     totalAmount += thisAmount;
   }
-  result += `총액: ${format(totalAmount / 100)}\n`;
+  result += `총액: ${usd(totalAmount)}\n`;
   result += `적립 포인트: ${volumeCredits}점\n`;
   return result;
 }
+
+// 리팩터링에서 중첩 함수를 사용하는 이유가 뭘까? Unit테스트 하기도 더 나쁜 것 같은데
+const usd = (money: number): string => {
+  return new Intl.NumberFormat('en-US', {
+    style: 'currency',
+    currency: 'USD',
+    minimumFractionDigits: 2,
+  }).format(money / 100);
+};
+
+export { statement, usd };
