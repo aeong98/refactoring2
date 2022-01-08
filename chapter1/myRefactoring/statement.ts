@@ -1,4 +1,6 @@
-export function statement(invoice: any, plays: any) {
+import { Invoice, Play } from './interfaces';
+
+export function statement(invoice: Invoice, plays: Play) {
   let totalAmount = 0;
   let volumeCredits = 0;
   let result = `청구 내역 (고객명: ${invoice.customer})\n`;
