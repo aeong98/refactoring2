@@ -1,4 +1,4 @@
-import { statement, usd, playFor, calculator } from './statement';
+import { statement, usd, playFor, calculator, pointEarning } from './statement';
 
 import { Invoice, Play } from './interfaces';
 
@@ -33,5 +33,15 @@ describe('청구 내역서에서 ', () => {
 
   test('계산 결과를 반환한다. ', () => {
     expect(calculator(invoice.performances[0], plays)).toEqual(65000);
+  });
+});
+
+describe('포인트 적립은 ', () => {
+  test('25점이 적립되어야 한다. ', () => {
+    expect(pointEarning(invoice.performances[0], plays)).toEqual(25);
+  });
+
+  test('희극 포인트는 5명마다 추가 적립을 받아야 한다. ', () => {
+    expect(pointEarning(invoice.performances[1], plays)).toEqual(12);
   });
 });

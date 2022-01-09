@@ -6,26 +6,26 @@ function statement(invoice: Invoice, plays: Play): string {
   let result = `청구 내역 (고객명: ${invoice.customer})\n`;
 
   for (let perf of invoice.performances) {
-    let thisAmount = 0;
-
-    thisAmount += calculator(perf, plays);
-
-    // 포인트를 적립한다.
-    volumeCredits += Math.max(perf.audience - 30, 0);
-    // 희극 관객 5명마다 추가 포인트를 제공한다.
-    if ('comedy' === playFor(perf.playID, plays).type)
-      volumeCredits += Math.floor(perf.audience / 5);
+    volumeCredits += pointEarning(perf, plays);
 
     // 청구 내역을 출력한다.
-    result += `${playFor(perf.playID, plays).name}:${usd(thisAmount)} (${
-      perf.audience
-    }석)\n`;
-    totalAmount += thisAmount;
+    result += `${playFor(perf.playID, plays).name}:${usd(
+      calculator(perf, plays)
+    )} (${perf.audience}석)\n`;
+    totalAmount += calculator(perf, plays);
   }
   result += `총액: ${usd(totalAmount)}\n`;
   result += `적립 포인트: ${volumeCredits}점\n`;
   return result;
 }
+
+const pointEarning = (aPerform: PerformInfo, plays: Play): number => {
+  let result = Math.max(aPerform.audience - 30, 0);
+  if ('comedy' === playFor(aPerform.playID, plays).type)
+    result += Math.floor(aPerform.audience / 5);
+
+  return result;
+};
 
 const calculator = (aPerf: PerformInfo, plays: Play): number => {
   let result: number;
@@ -65,4 +65,4 @@ const usd = (money: number): string => {
   }).format(money / 100);
 };
 
-export { statement, usd, playFor, calculator };
+export { statement, usd, playFor, calculator, pointEarning };
