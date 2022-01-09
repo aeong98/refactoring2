@@ -1,4 +1,4 @@
-import { Invoice, Play, PlayInfo } from './interfaces';
+import { Invoice, PerformInfo, Play, PlayInfo } from './interfaces';
 
 function statement(invoice: Invoice, plays: Play): string {
   let totalAmount: number = 0;
@@ -8,23 +8,7 @@ function statement(invoice: Invoice, plays: Play): string {
   for (let perf of invoice.performances) {
     let thisAmount = 0;
 
-    switch (playFor(perf.playID, plays).type) {
-      case 'tragedy': // 비극
-        thisAmount = 40000;
-        if (perf.audience > 30) {
-          thisAmount += 1000 * (perf.audience - 30);
-        }
-        break;
-      case 'comedy': // 희극
-        thisAmount = 30000;
-        if (perf.audience > 20) {
-          thisAmount += 10000 + 500 * (perf.audience - 20);
-        }
-        thisAmount += 300 * perf.audience;
-        break;
-      default:
-        throw new Error(`알 수 없는 장르: ${playFor(perf.playID, plays).type}`);
-    }
+    thisAmount += calculator(perf, plays);
 
     // 포인트를 적립한다.
     volumeCredits += Math.max(perf.audience - 30, 0);
@@ -43,6 +27,28 @@ function statement(invoice: Invoice, plays: Play): string {
   return result;
 }
 
+const calculator = (aPerf: PerformInfo, plays: Play): number => {
+  let result: number;
+  switch (playFor(aPerf.playID, plays).type) {
+    case 'tragedy': // 비극
+      result = 40000;
+      if (aPerf.audience > 30) {
+        result += 1000 * (aPerf.audience - 30);
+      }
+      break;
+    case 'comedy': // 희극
+      result = 30000;
+      if (aPerf.audience > 20) {
+        result += 10000 + 500 * (aPerf.audience - 20);
+      }
+      result += 300 * aPerf.audience;
+      break;
+    default:
+      throw new Error(`알 수 없는 장르: ${playFor(aPerf.playID, plays).type}`);
+  }
+  return result;
+};
+
 // 중첩함수로 받으면 id를 생략할 수 있는데 그러면 함수끼리 의존성이 생기기 때문에
 // id도 받는다. perf가 아닌 id를 받는 이유는 코드만 보고 playId로 play 객체를 찾는 것임을
 // 명시해주기 위해서이다.
@@ -59,4 +65,4 @@ const usd = (money: number): string => {
   }).format(money / 100);
 };
 
-export { statement, usd, playFor };
+export { statement, usd, playFor, calculator };

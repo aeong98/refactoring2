@@ -24,4 +24,4 @@ interface Play {
   [playName: string]: PlayInfo;
 }
 
-export { Invoice, Play, PlayInfo };
+export { Invoice, PerformInfo, Play, PlayInfo };

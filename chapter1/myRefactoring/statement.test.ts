@@ -1,4 +1,4 @@
-import { statement, usd, playFor } from './statement';
+import { statement, usd, playFor, calculator } from './statement';
 
 import { Invoice, Play } from './interfaces';
 
@@ -25,6 +25,13 @@ describe('청구 내역서에서 ', () => {
   });
 
   test('연극 이름(hamlet)과 type(comedy)를 반환한다.', () => {
-    expect(playFor(invoice.performances[0].playID, plays));
+    expect(playFor(invoice.performances[0].playID, plays)).toEqual({
+      name: 'Hamlet',
+      type: 'tragedy',
+    });
+  });
+
+  test('계산 결과를 반환한다. ', () => {
+    expect(calculator(invoice.performances[0], plays)).toEqual(65000);
   });
 });
