@@ -1,12 +1,18 @@
 import { Invoice, PerformInfo, Play, PlayInfo } from './interfaces';
 
 function statement(invoice: Invoice, plays: Play): string {
-  let result = `청구 내역 (고객명: ${invoice.customer})\n`;
-  result += playTextFor(invoice, plays);
-  result += `총액: ${usd(getTotalAmount(invoice, plays))}\n`;
-  result += `적립 포인트: ${billingsFor(invoice, plays)}점\n`;
-  return result;
+  return getPlainText(invoice, plays);
 }
+
+const getPlainText = (invoice: Invoice, plays: Play): string => {
+  return `청구 내역 (고객명: ${invoice.customer})\n${playTextFor(
+    invoice,
+    plays
+  )}총액: ${usd(getTotalAmount(invoice, plays))}\n적립 포인트: ${billingsFor(
+    invoice,
+    plays
+  )}점\n`;
+};
 
 const playTextFor = (invoice: Invoice, plays: Play): string => {
   return invoice.performances
