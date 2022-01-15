@@ -2,12 +2,9 @@ import { Invoice, PerformInfo, Play, PlayInfo } from './interfaces';
 
 function statement(invoice: Invoice, plays: Play): string {
   let totalAmount: number = 0;
-  let volumeCredits: number = 0;
   let result = `청구 내역 (고객명: ${invoice.customer})\n`;
 
   for (let perf of invoice.performances) {
-    volumeCredits += pointEarning(perf, plays);
-
     // 청구 내역을 출력한다.
     result += `${playFor(perf.playID, plays).name}:${usd(
       calculator(perf, plays)
@@ -15,9 +12,18 @@ function statement(invoice: Invoice, plays: Play): string {
     totalAmount += calculator(perf, plays);
   }
   result += `총액: ${usd(totalAmount)}\n`;
-  result += `적립 포인트: ${volumeCredits}점\n`;
+  result += `적립 포인트: ${billingsFor(invoice, plays)}점\n`;
   return result;
 }
+
+// 인자에 perform: Performances를 넣을까 아니면 Invoice를 넣을까 고민하다가 Invoice를 넣었다.
+// performances를 넣으면 범위를 최소화한다는 장점이 있지만, 타입이 너무 많아지는 것 같다는 생각이 들었다.
+// 변수를 굳이 더 만들 이유가 없는 것 같아서 그냥 Invoice로 받아 쪼개기로 했다.
+const billingsFor = (invoice: Invoice, plays: Play): number => {
+  return invoice.performances
+    .map((aPerf) => pointEarning(aPerf, plays))
+    .reduce((add, cur) => add + cur);
+};
 
 const pointEarning = (aPerform: PerformInfo, plays: Play): number => {
   let result = Math.max(aPerform.audience - 30, 0);
