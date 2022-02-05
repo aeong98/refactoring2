@@ -1,52 +1,78 @@
 import {Performance, Invoice, Play} from './types';
 
+
+class PerformanceCalculator{
+
+    performance:Performance;
+    play:Play;
+
+    constructor(performance:Performance, play:Play){
+        this.performance=performance;
+        this.play=play;
+    }
+
+    get amount():number|null { // FIXME: 이런 오버라이딩 타입처리 어떻게?
+        throw new Error("서브 클래그세엇 처리하도록 설계되었습니다.");
+    }
+
+    get volumeCredits (){
+        return Math.max(this.performance.audience -30, 0);
+    }
+}
+
+
+function createPerformanceCalculator(performance:Performance, play:Play){
+    switch(play.type){
+        case "tragedy": return new TragedyCalculator(performance, play);
+        case "comedy": return new ComedyCalculator(performance, play);
+        default:
+            throw new Error(`알 수 없는 장르 : ${play.type}`);
+    }
+}
+
+
+class TragedyCalculator extends PerformanceCalculator{
+    get amount(): number {
+        let result = 40000;
+        if (this.performance.audience > 30) {
+            result += 1000 * (this.performance.audience - 30);
+        }
+        return result;
+    }
+}
+class ComedyCalculator extends PerformanceCalculator{
+    get amount() : number{
+        let result = 30000;
+        if (this.performance.audience > 20) {
+            result += 10000 + 500 * (this.performance.audience - 20);
+        }
+        result += 300 * this.performance.audience;
+        return result;
+    }
+
+    get volumeCredits(): number {
+        return super.volumeCredits + Math.floor(this.performance.audience/5);
+    }
+}
+
 export function createStatementData(invoice:Invoice, plays:{[id:string]:Play}) {
-    const statementData={customer:"", performances: new Array <Performance>(), totalAmount:0, totalVolumeCredits:0};
-    statementData.customer=invoice.customer;
-    statementData.performances=invoice.performances.map(enrichPerformance);
-    statementData.totalAmount=getTotalAmount(statementData);
-    statementData.totalVolumeCredits = totalVolumeCredits(statementData);
+    const result={customer:"", performances: new Array <Performance>(), totalAmount:0, totalVolumeCredits:0};
+    result.customer=invoice.customer;
+    result.performances=invoice.performances.map(enrichPerformance);
+    result.totalAmount=getTotalAmount(result);
+    result.totalVolumeCredits = totalVolumeCredits(result);
+    return result;
     
     function enrichPerformance(performace:Performance){
-        const result:any = Object.assign({}, performace);
-        result.play=playFor(result);
-        result.amount=amountFor(result);
-        result.volumeCredits=volumeCreditsFor(result);
+        const calculator = createPerformanceCalculator(performace, playFor(performace));
+        const result:Performance = Object.assign({}, performace);
+        result.play=calculator.play;
+        result.amount=calculator.amount;
+        result.volumeCredits=calculator.volumeCredits;
         return result;
     }
     function playFor(performance:Performance){
         return plays[performance.playID];
-    }
-    function amountFor(performance:Performance){
-      // 변수 명확한 이름으로 변경
-        let result=0;
-        
-        switch (performance.play.type) {
-            case 'tragedy': // 비극
-            result = 40000;
-            if (performance.audience > 30) {
-                result += 1000 * (performance.audience - 30);
-            }
-            break;
-            case 'comedy': // 희극
-            result = 30000;
-            if (performance.audience > 20) {
-                result += 10000 + 500 * (performance.audience - 20);
-            }
-            result += 300 * performance.audience;
-            break;
-            default:
-            throw new Error(`알 수 없는 장르: ${performance.play.type}`);
-        }
-        return result;
-    }
-    function volumeCreditsFor(perfomance:Performance){
-        let volumeCredits=0;
-        volumeCredits+=Math.max(perfomance.audience -30, 0);
-        if ('comedy' ===(perfomance.play.type)){
-        volumeCredits += Math.floor(perfomance.audience / 5);
-        }
-    return volumeCredits;
     }
     function getTotalAmount (data:Invoice){
         let result = 0;
@@ -62,5 +88,4 @@ export function createStatementData(invoice:Invoice, plays:{[id:string]:Play}) {
         }
         return result;
     }
-    return statementData;
-  }
+}
