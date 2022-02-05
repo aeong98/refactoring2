@@ -12,7 +12,7 @@ class PerformanceCalculator{
     }
 
     get amount():number|null { // FIXME: 이런 오버라이딩 타입처리 어떻게?
-        throw new Error("서브 클래그세엇 처리하도록 설계되었습니다.");
+        throw new Error("서브 클래스에서 처리하도록 설계되었습니다.");
     }
 
     get volumeCredits (){
