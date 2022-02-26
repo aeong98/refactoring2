@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<coverage generated="1645364605552" clover="3.2.0">
-  <project timestamp="1645364605552" name="All files">
+<coverage generated="1645536647442" clover="3.2.0">
+  <project timestamp="1645536647442" name="All files">
     <metrics statements="42" coveredstatements="38" conditionals="4" coveredconditionals="2" methods="25" coveredmethods="21" elements="71" coveredelements="61" complexity="0" loc="42" ncloc="42" packages="1" files="1" classes="1"/>
     <file name="app.js" path="/Users/ksy/refactoring/refactoring2/chapter4/app.js">
       <metrics statements="42" coveredstatements="38" conditionals="4" coveredconditionals="2" methods="25" coveredmethods="21"/>
